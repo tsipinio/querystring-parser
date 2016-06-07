@@ -147,7 +147,7 @@ def parse(query_string, unquote=True, normalized=False, encoding=DEFAULT_ENCODIN
         if encoding:
             var = var.decode(encoding)
             val = val.decode(encoding)
-        plist.append(parser_helper(var, val))
+        plist.append(parser_helper(var, value_parser(val)))
     for di in plist:
         (k, v) = di.popitem()
         tempdict = mydict
@@ -163,8 +163,23 @@ def parse(query_string, unquote=True, normalized=False, encoding=DEFAULT_ENCODIN
 
     if normalized == True:
         return _normalize(mydict)
+
     return mydict
 
+def value_parser(value):
+    """ Parse JSON values to Python values
+    """
+    VALUES = {
+        u'null': None,
+        u'true': True,
+        u'false': False
+    }
+
+    parsed_value = value
+    if value in VALUES.keys():
+        parsed_value = VALUES[value]
+
+    return parsed_value
 
 def _normalize(d):
     '''
