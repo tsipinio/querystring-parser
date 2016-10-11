@@ -24,7 +24,6 @@ except NameError:
     DEFAULT_ENCODING = None
 
 
-
 def has_variable_name(s):
     '''
     Variable name before [
@@ -112,6 +111,7 @@ def parser_helper(key, val):
         pdict[newkey] = val
     return pdict
 
+
 def parse(query_string, unquote=True, normalized=False, encoding=DEFAULT_ENCODING):
     '''
     Main parse function
@@ -128,25 +128,22 @@ def parse(query_string, unquote=True, normalized=False, encoding=DEFAULT_ENCODIN
     if query_string == "":
         return mydict
     
-    if type(query_string) == bytes:
-      query_string = query_string.decode()
     
     for element in query_string.split("&"):
         try:
             if unquote:
                 (var, val) = element.split("=")
-                if sys.version_info[0] == 2:
-                  var = var.encode('ascii')
-                  val = val.encode('ascii')
                 var = urllib.unquote_plus(var)
                 val = urllib.unquote_plus(val)
             else:
                 (var, val) = element.split("=")
         except ValueError:
             raise MalformedQueryStringError
+
         if encoding:
             var = var.decode(encoding)
             val = val.decode(encoding)
+
         plist.append(parser_helper(var, value_parser(val)))
     for di in plist:
         (k, v) = di.popitem()
